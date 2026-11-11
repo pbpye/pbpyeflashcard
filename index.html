@@ -1058,15 +1058,34 @@
   {"english": "Zoom", "type": "v.", "turkish": "Yakınlaştırmak, hızla fırlamak", "example": "The surgeon used the digital monitor to zoom in on the torn tissue."},
   {"english": "Zucchini", "type": "n.", "turkish": "Kabak", "example": "He often roasts zucchini and peppers to go with his high-protein pasta."}
      ]`;
-    let INITIAL_FLASHCARDS = [];
+   let INITIAL_FLASHCARDS = [];
     let jsonError = null;
     try {
-      INITIAL_FLASHCARDS = JSON.parse(RAW_JSON_DATA).sort((a, b) => a.english.localeCompare(b.english));
+        // 1. Önce veriyi okuyoruz
+        let hamListe = JSON.parse(RAW_JSON_DATA);
+        
+        // 2. Kusursuz Çift Kelime Temizleyici (Set Yöntemi)
+        let temizListe = [];
+        let gorulenKelimeler = new Set();
+        
+        for (let i = 0; i < hamListe.length; i++) {
+            let kelime = hamListe[i];
+            // Kelimenin sağındaki solundaki boşlukları silip küçük harfe çeviriyoruz ki tam eşleşsin
+            let kontrolKelimesi = kelime.english.toLowerCase().trim();
+            
+            // Eğer bu kelimeyi daha önce GÖRMEDİYSEK, listeye ekle
+            if (!gorulenKelimeler.has(kontrolKelimesi)) {
+                gorulenKelimeler.add(kontrolKelimesi);
+                temizListe.push(kelime);
+            }
+        }
+        
+        // 3. Temizlenmiş listeyi alfabetik diz ve uygulamaya ver
+        INITIAL_FLASHCARDS = temizListe.sort((a, b) => a.english.localeCompare(b.english));
+        
     } catch (e) {
-      jsonError = "Kelime yükleme hatası (JSON): Yapıştırdığınız kelime listesinde format hatası var. Eksik bir virgül veya fazla tırnak işareti olabilir. Hata detayı: " + e.message;
-      INITIAL_FLASHCARDS = JSON.parse(RAW_JSON_DATA)
-      .filter((kelime, index, dizi) => index === dizi.findIndex((k) => k.english.toLowerCase().trim() === kelime.english.toLowerCase().trim()))
-      .sort((a, b) => a.english.localeCompare(b.english));
+        jsonError = "Kelime yükleme hatası (JSON): " + e.message;
+        INITIAL_FLASHCARDS = [];
     }
 
     const translationCache = new Map();
