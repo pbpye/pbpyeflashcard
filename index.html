@@ -1058,13 +1058,9 @@
   {"english": "Zoom", "type": "v.", "turkish": "Yakınlaştırmak, hızla fırlamak", "example": "The surgeon used the digital monitor to zoom in on the torn tissue."},
   {"english": "Zucchini", "type": "n.", "turkish": "Kabak", "example": "He often roasts zucchini and peppers to go with his high-protein pasta."}
      ]`;
-    // --- ÇİFT KELİME TEMİZLEYİCİ BAŞLANGIÇ ---
-RAW_JSON_DATA = RAW_JSON_DATA.filter((kelime, index, dizi) =>
+   RAW_JSON_DATA = RAW_JSON_DATA.filter((kelime, index, dizi) =>
     index === dizi.findIndex((k) => k.english.toLowerCase().trim() === kelime.english.toLowerCase().trim())
 );
-// --- ÇİFT KELİME TEMİZLEYİCİ BİTİŞ ---
-    // 👆👆👆 YAPIŞTIRMA İŞLEMİ BURADA BİTİYOR 👆👆👆
-
     let INITIAL_FLASHCARDS = [];
     let jsonError = null;
     try {
