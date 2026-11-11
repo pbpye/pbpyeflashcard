@@ -1058,16 +1058,15 @@
   {"english": "Zoom", "type": "v.", "turkish": "Yakınlaştırmak, hızla fırlamak", "example": "The surgeon used the digital monitor to zoom in on the torn tissue."},
   {"english": "Zucchini", "type": "n.", "turkish": "Kabak", "example": "He often roasts zucchini and peppers to go with his high-protein pasta."}
      ]`;
-   RAW_JSON_DATA = RAW_JSON_DATA.filter((kelime, index, dizi) =>
-    index === dizi.findIndex((k) => k.english.toLowerCase().trim() === kelime.english.toLowerCase().trim())
-);
     let INITIAL_FLASHCARDS = [];
     let jsonError = null;
     try {
       INITIAL_FLASHCARDS = JSON.parse(RAW_JSON_DATA).sort((a, b) => a.english.localeCompare(b.english));
     } catch (e) {
       jsonError = "Kelime yükleme hatası (JSON): Yapıştırdığınız kelime listesinde format hatası var. Eksik bir virgül veya fazla tırnak işareti olabilir. Hata detayı: " + e.message;
-      INITIAL_FLASHCARDS = []; // Hata varsa boş kalsın
+      INITIAL_FLASHCARDS = JSON.parse(RAW_JSON_DATA)
+      .filter((kelime, index, dizi) => index === dizi.findIndex((k) => k.english.toLowerCase().trim() === kelime.english.toLowerCase().trim()))
+      .sort((a, b) => a.english.localeCompare(b.english));
     }
 
     const translationCache = new Map();
