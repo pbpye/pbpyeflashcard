@@ -35,9 +35,8 @@
     // 👇👇👇 SENİN 1000 KELİMENİ YAPIŞTIRACAĞIN YER BURASI 👇👇👇
     // DİKKAT: Sadece köşeli parantezlerin [ ] içini değiştir.
     // Kelimelerini aşağıdaki TERS TIRNAKLAR (`) arasına yapıştır!
-    const RAW_JSON_DATA = `[
-      {"english": "Abandon", "type": "v.", "turkish": "Terk etmek / Bırakmak", "example": "The company had to abandon the project due to a lack of funding."},
-      {"english": "Accommodate", "type": "v.", "turkish": "Ağırlamak / Uyum sağlamak", "example": "This new hotel can accommodate up to five hundred guests."},
+    const RAW_JSON_DATA = `[[{"english": "Abandon", "type": "v.", "turkish": "Terk etmek / Bırakmak", "example": "The company had to abandon the project due to a lack of funding."},
+  {"english": "Accommodate", "type": "v.", "turkish": "Ağırlamak / Uyum sağlamak", "example": "This new hotel can accommodate up to five hundred guests."},
   {"english": "Parallel", "type": "adj.", "turkish": "Paralel, benzer", "example": "There is a parallel between his discipline in the gym and his medical career."},
   {"english": "Parameter", "type": "n.", "turkish": "Parametre, ölçüt", "example": "The blood test results fell within the normal physiological parameters."},
   {"english": "Partial", "type": "adj.", "turkish": "Kısmi, taraflı", "example": "The patient suffered a partial loss of vision after the accident."},
@@ -377,7 +376,7 @@
   {"english": "Charity", "type": "n.", "turkish": "Hayır kurumu", "example": "She donates money to a local charity every month."},
   {"english": "Choice", "type": "n.", "turkish": "Seçim, seçenek", "example": "You have a choice between coffee or tea."},
   {"english": "Claim", "type": "v.", "turkish": "İddia etmek", "example": "He claims that he saw a UFO last night."},
-  {"english": "Climate", "type": "n.", "turkish": "İklim", "example": "The Mediterranean has a very mild climate."}
+  {"english": "Climate", "type": "n.", "turkish": "İklim", "example": "The Mediterranean has a very mild climate."},
   {"english": "Damage", "type": "v.", "turkish": "Zarar vermek", "example": "Smoking can seriously damage your health."},
   {"english": "Data", "type": "n.", "turkish": "Veri", "example": "We need to analyze the data before making a decision."},
   {"english": "Decade", "type": "n.", "turkish": "On yıl", "example": "The economy has grown significantly over the last decade."},
@@ -417,7 +416,7 @@
   {"english": "Engine", "type": "n.", "turkish": "Motor", "example": "My car's engine has been making a strange noise."},
   {"english": "Enhance", "type": "v.", "turkish": "Geliştirmek, artırmak", "example": "Reading books can greatly enhance your vocabulary."},
   {"english": "Ensure", "type": "v.", "turkish": "Garantiye almak, emin olmak", "example": "Please ensure that all windows are closed before leaving."},
-  {"english": "Environment", "type": "n.", "turkish": "Çevre", "example": "We must do more to protect the natural environment."}
+  {"english": "Environment", "type": "n.", "turkish": "Çevre", "example": "We must do more to protect the natural environment."},
   {"english": "Fabric", "type": "n.", "turkish": "Kumaş", "example": "The seats of the car are made of a soft fabric."},
   {"english": "Facility", "type": "n.", "turkish": "Tesis, olanak", "example": "The hospital has excellent research facilities."},
   {"english": "Factor", "type": "n.", "turkish": "Faktör, etken", "example": "Diet is an important factor in maintaining good health."},
@@ -457,7 +456,7 @@
   {"english": "Gradually", "type": "adv.", "turkish": "Yavaş yavaş, kademeli olarak", "example": "His health is gradually improving."},
   {"english": "Grant", "type": "v.", "turkish": "Vermek, bağışlamak", "example": "The university granted him a scholarship."},
   {"english": "Guarantee", "type": "v.", "turkish": "Garanti etmek", "example": "I cannot guarantee that the product will arrive tomorrow."},
-  {"english": "Guess", "type": "v.", "turkish": "Tahmin etmek", "example": "Can you guess how much this car costs?"}
+  {"english": "Guess", "type": "v.", "turkish": "Tahmin etmek", "example": "Can you guess how much this car costs?"},
   {"english": "Habit", "type": "n.", "turkish": "Alışkanlık", "example": "Tracking daily calories is a great habit for fitness."},
   {"english": "Handle", "type": "v.", "turkish": "Başa çıkmak, halletmek", "example": "An emergency doctor knows how to handle stressful situations."},
   {"english": "Harm", "type": "n.", "turkish": "Zarar", "example": "Too much sugar can cause harm to your body."},
@@ -577,7 +576,7 @@
   {"english": "Medium", "type": "adj.", "turkish": "Orta", "example": "I would like my steak cooked medium, please."},
   {"english": "Memory", "type": "n.", "turkish": "Hafıza, bellek", "example": "He upgraded his laptop's memory to get better gaming performance."},
   {"english": "Mental", "type": "adj.", "turkish": "Zihinsel", "example": "Physical exercise is also very good for your mental health."},
-  {"english": "Mention", "type": "v.", "turkish": "Bahsetmek", "example": "Did he mention what time the meeting will start?"}
+  {"english": "Mention", "type": "v.", "turkish": "Bahsetmek", "example": "Did he mention what time the meeting will start?"},
   {"english": "Nail", "type": "n.", "turkish": "Tırnak, çivi", "example": "He hit the nail with a heavy hammer."},
   {"english": "Narrow", "type": "adj.", "turkish": "Dar", "example": "The roads in the old village are very narrow."},
   {"english": "Nation", "type": "n.", "turkish": "Ulus, millet", "example": "The president addressed the entire nation on television."},
@@ -617,7 +616,7 @@
   {"english": "Oppose", "type": "v.", "turkish": "Karşı çıkmak", "example": "Many local residents oppose the new building project."},
   {"english": "Opposite", "type": "adj.", "turkish": "Zıt, karşı", "example": "The pharmacy is located on the opposite side of the street."},
   {"english": "Ordinary", "type": "adj.", "turkish": "Sıradan, normal", "example": "It was just an ordinary day at the emergency department."},
-  {"english": "Organize", "type": "v.", "turkish": "Düzenlemek, organize etmek", "example": "He organized his English vocabulary flashcards into categories."}
+  {"english": "Organize", "type": "v.", "turkish": "Düzenlemek, organize etmek", "example": "He organized his English vocabulary flashcards into categories."},
   {"english": "Pace", "type": "n.", "turkish": "Hız, tempo", "example": "The pace of work in the emergency room is usually very fast."},
   {"english": "Package", "type": "n.", "turkish": "Paket", "example": "He received a package containing his new mechanical keyboard."},
   {"english": "Painful", "type": "adj.", "turkish": "Ağrılı, acı veren", "example": "The patient complained about a painful swelling in his knee."},
@@ -657,7 +656,7 @@
   {"english": "Reach", "type": "v.", "turkish": "Ulaşmak", "example": "He hopes to reach his target body weight by the end of summer."},
   {"english": "React", "type": "v.", "turkish": "Tepki vermek", "example": "How did the patient react to the new medication?"},
   {"english": "Realize", "type": "v.", "turkish": "Farkına varmak", "example": "He didn't realize how tired he was until his shift ended."},
-  {"english": "Reason", "type": "n.", "turkish": "Sebep, neden", "example": "The main reason for his fatigue is a lack of deep sleep."}
+  {"english": "Reason", "type": "n.", "turkish": "Sebep, neden", "example": "The main reason for his fatigue is a lack of deep sleep."},
   {"english": "Ultimate", "type": "adj.", "turkish": "Nihai, son", "example": "His ultimate goal is to finish the marathon."},
   {"english": "Unable", "type": "adj.", "turkish": "Yapamayan, aciz", "example": "I was unable to attend the meeting yesterday."},
   {"english": "Uncomfortable", "type": "adj.", "turkish": "Rahatsız", "example": "These new shoes are very uncomfortable."},
@@ -1058,6 +1057,7 @@
   {"english": "Zoology", "type": "n.", "turkish": "Zooloji", "example": "Before switching to human medicine, he briefly considered studying zoology."},
   {"english": "Zoom", "type": "v.", "turkish": "Yakınlaştırmak, hızla fırlamak", "example": "The surgeon used the digital monitor to zoom in on the torn tissue."},
   {"english": "Zucchini", "type": "n.", "turkish": "Kabak", "example": "He often roasts zucchini and peppers to go with his high-protein pasta."}
+     ]
      ]`;
     // 👆👆👆 YAPIŞTIRMA İŞLEMİ BURADA BİTİYOR 👆👆👆
 
