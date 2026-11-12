@@ -1096,11 +1096,10 @@
   const [passwordError, setPasswordError] = React.useState(false);
 
   const handleLogin = (e) => {
-      e.preventDefault();
-      // Kendi şifreni 'gizlisifre123' yazan yere yaz (tırnakları silmeden!)
+     e.preventDefault();
       if (passwordInput === 'pbpye31') { 
           localStorage.setItem('app_unlocked_v1', 'true');
-          setIsLocked(false);
+          window.location.reload(); // Otomatik F5 atar ve siyah ekranı engeller
       } else {
           setPasswordError(true);
           setPasswordInput('');
