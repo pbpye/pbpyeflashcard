@@ -5,17 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>pbpye İngilizce Flash Card</title>
   
-  <!-- CSS & Font Kütüphaneleri -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- React Kütüphaneleri -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <style>
-    body { background-color: #090a0f; color: #f1f5f9; overflow-x: hidden; }
+    body { background-color: #090a0f; color: #f1f5f9; overflow-x: hidden; touch-action: pan-y; }
     .perspective-1000 { perspective: 1000px; }
     .transform-style-preserve-3d { transform-style: preserve-3d; }
     .backface-visibility-hidden { backface-visibility: hidden; }
@@ -32,11 +30,10 @@
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
 
-    // 👇👇👇 SENİN KELİME LİSTENİ YAPIŞTIRACAĞIN YER BURASI 👇👇👇
-    // DİKKAT: Sadece köşeli parantezlerin [ ] içini değiştir.
+    // 👇👇👇 KELİMELERİNİ BURAYA YAPIŞTIR 👇👇👇
     let RAW_JSON_DATA = `[ 
       
-    {"english": "Abandon", "type": "v.", "turkish": "Terk etmek / Bırakmak", "example": "The company had to abandon the project due to a lack of funding."},
+   {"english": "Abandon", "type": "v.", "turkish": "Terk etmek / Bırakmak", "example": "The company had to abandon the project due to a lack of funding."},
   {"english": "Accommodate", "type": "v.", "turkish": "Ağırlamak / Uyum sağlamak", "example": "This new hotel can accommodate up to five hundred guests."},
   {"english": "Parallel", "type": "adj.", "turkish": "Paralel, benzer", "example": "There is a parallel between his discipline in the gym and his medical career."},
   {"english": "Parameter", "type": "n.", "turkish": "Parametre, ölçüt", "example": "The blood test results fell within the normal physiological parameters."},
@@ -1065,27 +1062,19 @@
     let INITIAL_FLASHCARDS = [];
     let jsonError = null;
     try {
-        // 1. Önce veriyi okuyoruz
         let hamListe = JSON.parse(RAW_JSON_DATA);
-        
-        // 2. Kusursuz Çift Kelime Temizleyici (Set Yöntemi)
         let temizListe = [];
         let gorulenKelimeler = new Set();
         
         for (let i = 0; i < hamListe.length; i++) {
             let kelime = hamListe[i];
             let kontrolKelimesi = kelime.english.toLowerCase().trim();
-            
-            // Eğer bu kelimeyi daha önce GÖRMEDİYSEK, listeye ekle
             if (!gorulenKelimeler.has(kontrolKelimesi)) {
                 gorulenKelimeler.add(kontrolKelimesi);
                 temizListe.push(kelime);
             }
         }
-        
-        // 3. Temizlenmiş listeyi alfabetik diz ve uygulamaya ver
         INITIAL_FLASHCARDS = temizListe.sort((a, b) => a.english.localeCompare(b.english));
-        
     } catch (e) {
         jsonError = "Kelime yükleme hatası (JSON): " + e.message;
         INITIAL_FLASHCARDS = [];
@@ -1094,7 +1083,6 @@
     const translationCache = new Map();
 
     function App() {
-      // ŞİFRE SİSTEMİ
       const [isLocked, setIsLocked] = React.useState(() => localStorage.getItem('app_unlocked_v1') !== 'true');
       const [passwordInput, setPasswordInput] = React.useState('');
       const [passwordError, setPasswordError] = React.useState(false);
@@ -1103,14 +1091,13 @@
           e.preventDefault();
           if (passwordInput === 'pbpye31') { 
               localStorage.setItem('app_unlocked_v1', 'true');
-              window.location.reload(); // Otomatik F5 atar ve siyah ekranı engeller
+              window.location.reload(); 
           } else {
               setPasswordError(true);
               setPasswordInput('');
           }
       };
 
-      // 1. KONTROL: UYGULAMA KİLİTLİ Mİ? (EN DIŞ KAPI)
       if (isLocked) return (
           <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 font-sans">
               <div className="bg-slate-900/85 backdrop-blur-md border border-slate-700 p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center">
@@ -1129,10 +1116,7 @@
                           className={`w-full bg-slate-800 border ${passwordError ? 'border-rose-500' : 'border-slate-600'} text-white px-4 py-3 rounded-xl focus:outline-none focus:border-blue-500 transition-colors text-center tracking-widest`}
                       />
                       {passwordError && <span className="text-rose-400 text-xs font-semibold">Hatalı şifre, tekrar deneyin!</span>}
-                      <button 
-                          type="submit" 
-                          className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-lg flex justify-center items-center gap-2"
-                      >
+                      <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-lg flex justify-center items-center gap-2">
                           Giriş Yap <i className="fa-solid fa-arrow-right"></i>
                       </button>
                   </form>
@@ -1140,26 +1124,21 @@
           </div>
       );
       
-      // 2. KONTROL: JSON HATASI VAR MI?
       if (jsonError) {
         return (
           <div className="min-h-screen bg-[#090a0f] flex items-center justify-center p-4">
             <div className="bg-rose-950/50 border border-rose-500 rounded-3xl p-8 max-w-lg text-center shadow-[0_0_50px_rgba(244,63,94,0.3)]">
               <i className="fa-solid fa-triangle-exclamation text-6xl text-rose-500 mb-6"></i>
               <h2 className="text-2xl font-bold text-white mb-4">SİSTEM ÇÖKMESİ ENGELLENDİ</h2>
-              <p className="text-rose-200 mb-4 text-sm leading-relaxed">
-                Kelimeleri yapıştırırken bir format hatası oluştu (muhtemelen eksik bir virgül, parantez veya fazladan tırnak işareti).
-              </p>
+              <p className="text-rose-200 mb-4 text-sm leading-relaxed">Kelimeleri yapıştırırken bir format hatası oluştu.</p>
               <div className="bg-slate-950 p-4 rounded-xl text-left border border-rose-500/30 overflow-auto">
                 <code className="text-rose-400 text-xs font-mono">{jsonError}</code>
               </div>
-              <p className="text-slate-400 mt-4 text-xs">Lütfen GitHub'a gidip yapıştırdığınız JSON verisini kontrol edin.</p>
             </div>
           </div>
         );
       }
 
-      // LocalStorage'dan verileri çek veya varsayılanları kullan
       const [deck, setDeck] = useState(() => {
         const saved = localStorage.getItem('pbpye_deck');
         return saved ? JSON.parse(saved) : INITIAL_FLASHCARDS;
@@ -1182,9 +1161,7 @@
         return saved ? JSON.parse(saved) : [];
       });
       const [isFinished, setIsFinished] = useState(false);
-      const [score, setScore] = useState(0);
 
-      // Veriler değiştikçe Tarayıcı Hafızasına (LocalStorage) otomatik kaydet
       useEffect(() => { localStorage.setItem('pbpye_deck', JSON.stringify(deck)); }, [deck]);
       useEffect(() => { localStorage.setItem('pbpye_currentIndex', currentIndex.toString()); }, [currentIndex]);
       useEffect(() => { localStorage.setItem('pbpye_known', JSON.stringify(knownWords)); }, [knownWords]);
@@ -1209,102 +1186,7 @@
       const fileInputRef = useRef(null);
       const [uploadMessage, setUploadMessage] = useState({ text: '', type: '' });
 
-      const fetchTranslation = async (text) => {
-        const cacheKey = text.toLowerCase();
-        if (translationCache.has(cacheKey)) {
-          return translationCache.get(cacheKey);
-        }
-        try {
-          const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=tr&dt=t&q=${encodeURIComponent(text)}`;
-          const res = await fetch(url);
-          const data = await res.json();
-          if (data && data[0]) {
-            const finalTranslation = data[0].map(item => item[0]).join('');
-            translationCache.set(cacheKey, finalTranslation);
-            return finalTranslation;
-          }
-        } catch (err) {
-          console.error("Çeviri hatası:", err);
-        }
-        return null;
-      };
-
-      const handleTextSelection = () => {
-        const selection = window.getSelection();
-        if (selection && selection.toString().trim()) {
-          setSelectedText(selection.toString().trim());
-          setShowTurkishPrompt(true);
-        }
-      };
-
-      const closeTranslationPrompt = () => {
-        setShowTurkishPrompt(false);
-        setSelectedText('');
-        setTranslatedText('');
-      };
-
-      const handleWordClick = (e, word) => {
-        e.stopPropagation();
-        const selection = window.getSelection();
-        if (selection && selection.toString().trim().length > 0) return;
-        const cleanWord = word.replace(/[.,/#!$%^&*;:{}=\-_`~()"]/g,"").trim();
-        if (cleanWord) {
-          setSelectedText(cleanWord);
-          setTranslatedText('');
-          setShowTurkishPrompt(true);
-          translateSelectedTextForWord(cleanWord);
-        }
-      };
-
-      const translateSelectedTextForWord = async (wordToTranslate) => {
-        setIsTranslating(true);
-        const result = await fetchTranslation(wordToTranslate);
-        setTranslatedText(result || "Çeviri bulunamadı.");
-        setIsTranslating(false);
-      };
-
-      const handleFileUpload = (event) => {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          try {
-            const uploadedData = JSON.parse(e.target.result);
-            if (Array.isArray(uploadedData) && uploadedData.length > 0 && uploadedData[0].english) {
-              const combined = [...deck, ...uploadedData];
-              const uniqueMap = new Map();
-              combined.forEach(item => {
-                const key = item.english.trim().toLowerCase();
-                if (!uniqueMap.has(key)) {
-                  uniqueMap.set(key, item);
-                }
-              });
-              const mergedDeck = Array.from(uniqueMap.values()).sort((a, b) => a.english.localeCompare(b.english));
-              
-              setDeck(mergedDeck);
-              setIsFinished(false);
-              setUploadMessage({ text: `[SECURE] ${uploadedData.length} kelime yüklendi & sıralandı!`, type: 'success' });
-              setTimeout(() => setUploadMessage({ text: '', type: '' }), 4000);
-            } else {
-              throw new Error("Geçersiz format");
-            }
-          } catch (error) {
-            setUploadMessage({ text: '[ERROR] Geçersiz dosya formatı!', type: 'error' });
-            setTimeout(() => setUploadMessage({ text: '', type: '' }), 3000);
-          }
-        };
-        reader.readAsText(file);
-        event.target.value = null; 
-      };
-
       const currentWord = deck[currentIndex];
-
-      const handleCardClick = () => {
-        const selection = window.getSelection();
-        if (selection && selection.toString().length > 0) return;
-        setIsFlipped(!isFlipped);
-      };
 
       const playAudio = (e, wordToPlay = null) => {
         if (e) e.stopPropagation();
@@ -1327,41 +1209,158 @@
 
       const handleNext = () => {
         if (currentIndex < deck.length - 1) {
-          setCurrentIndex(currentIndex + 1);
+          setCurrentIndex(prev => prev + 1);
           setIsFlipped(false);
         }
       };
 
       const handlePrev = () => {
         if (currentIndex > 0) {
-          setCurrentIndex(currentIndex - 1);
+          setCurrentIndex(prev => prev - 1);
           setIsFlipped(false);
         }
+      };
+
+      // --- KUSURSUZ KAYDIRMA & TIKLAMA (POINTER) SENSÖRLERİ ---
+      const pointerStartX = useRef(null);
+      const pointerEndX = useRef(null);
+      const isDragging = useRef(false);
+
+      const onPointerDown = (e) => {
+        pointerStartX.current = e.clientX;
+        pointerEndX.current = e.clientX;
+        isDragging.current = false;
+      };
+
+      const onPointerMove = (e) => {
+        if (pointerStartX.current !== null) {
+          pointerEndX.current = e.clientX;
+          // Eğer parmak/fare 15 pikselden fazla hareket ettiyse bu bir "kaydırmadır"
+          if (Math.abs(pointerStartX.current - pointerEndX.current) > 15) {
+            isDragging.current = true;
+          }
+        }
+      };
+
+      const onPointerUp = (e) => {
+        if (pointerStartX.current !== null && pointerEndX.current !== null) {
+          const distance = pointerStartX.current - pointerEndX.current;
+          
+          // Sola veya sağa yeterince kaydırıldıysa kart değiştir
+          if (distance > 50 && currentIndex < deck.length - 1) {
+            handleNext();
+          } else if (distance < -50 && currentIndex > 0) {
+            handlePrev();
+          } 
+          // Eğer kaydırma yapılmadıysa (sadece tıklandıysa) kartı çevir
+          else if (!isDragging.current) {
+            const selection = window.getSelection();
+            if (!selection || selection.toString().trim().length === 0) {
+              setIsFlipped(!isFlipped);
+            }
+          }
+        }
+        
+        // Metin seçimi kontrolü (çeviri popup'ı için)
+        const selection = window.getSelection();
+        if (selection && selection.toString().trim().length > 0) {
+          setSelectedText(selection.toString().trim());
+          setShowTurkishPrompt(true);
+        }
+
+        pointerStartX.current = null;
+        pointerEndX.current = null;
+        isDragging.current = false;
+      };
+      // --------------------------------------------------------
+
+      const fetchTranslation = async (text) => {
+        const cacheKey = text.toLowerCase();
+        if (translationCache.has(cacheKey)) return translationCache.get(cacheKey);
+        try {
+          const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=tr&dt=t&q=${encodeURIComponent(text)}`;
+          const res = await fetch(url);
+          const data = await res.json();
+          if (data && data[0]) {
+            const finalTranslation = data[0].map(item => item[0]).join('');
+            translationCache.set(cacheKey, finalTranslation);
+            return finalTranslation;
+          }
+        } catch (err) { console.error(err); }
+        return null;
+      };
+
+      const closeTranslationPrompt = () => {
+        setShowTurkishPrompt(false);
+        setSelectedText('');
+        setTranslatedText('');
+      };
+
+      const handleWordClick = (e, word) => {
+        e.stopPropagation();
+        const cleanWord = word.replace(/[.,/#!$%^&*;:{}=\-_`~()"]/g,"").trim();
+        if (cleanWord) {
+          setSelectedText(cleanWord);
+          setTranslatedText('');
+          setShowTurkishPrompt(true);
+          translateSelectedTextForWord(cleanWord);
+        }
+      };
+
+      const translateSelectedTextForWord = async (wordToTranslate) => {
+        setIsTranslating(true);
+        const result = await fetchTranslation(wordToTranslate);
+        setTranslatedText(result || "Çeviri bulunamadı.");
+        setIsTranslating(false);
+      };
+
+      const handleFileUpload = (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const uploadedData = JSON.parse(e.target.result);
+            if (Array.isArray(uploadedData) && uploadedData.length > 0 && uploadedData[0].english) {
+              const combined = [...deck, ...uploadedData];
+              const uniqueMap = new Map();
+              combined.forEach(item => {
+                const key = item.english.trim().toLowerCase();
+                if (!uniqueMap.has(key)) uniqueMap.set(key, item);
+              });
+              setDeck(Array.from(uniqueMap.values()).sort((a, b) => a.english.localeCompare(b.english)));
+              setIsFinished(false);
+              setUploadMessage({ text: `[SECURE] ${uploadedData.length} kelime yüklendi & sıralandı!`, type: 'success' });
+              setTimeout(() => setUploadMessage({ text: '', type: '' }), 4000);
+            } else throw new Error("Geçersiz");
+          } catch (error) {
+            setUploadMessage({ text: '[ERROR] Geçersiz format!', type: 'error' });
+            setTimeout(() => setUploadMessage({ text: '', type: '' }), 3000);
+          }
+        };
+        reader.readAsText(file);
+        event.target.value = null; 
       };
 
       const handleJumpToCard = (e, specificIndex = null) => {
         if (e) e.preventDefault();
         let targetIndex = specificIndex;
-        
         if (targetIndex === null) {
           const targetNum = parseInt(jumpTarget, 10);
           if (!isNaN(targetNum) && targetNum >= 1 && targetNum <= deck.length) {
             targetIndex = targetNum - 1;
           } else {
             const foundIdx = deck.findIndex(w => 
-              w.english.toLowerCase().includes(jumpTarget.toLowerCase()) ||
-              w.turkish.toLowerCase().includes(jumpTarget.toLowerCase())
+              w.english.toLowerCase().includes(jumpTarget.toLowerCase()) || w.turkish.toLowerCase().includes(jumpTarget.toLowerCase())
             );
-            if (foundIdx !== -1) {
-              targetIndex = foundIdx;
-            } else {
+            if (foundIdx !== -1) targetIndex = foundIdx;
+            else {
               setUploadMessage({ text: `[WARN] Eşleşme bulunamadı!`, type: 'error' });
               setTimeout(() => setUploadMessage({ text: '', type: '' }), 3000);
               return;
             }
           }
         }
-
         if (targetIndex !== null && targetIndex >= 0 && targetIndex < deck.length) {
           setCurrentIndex(targetIndex);
           setIsFlipped(false);
@@ -1382,27 +1381,16 @@
 
       const handleKnown = () => {
         setUnknownWords(unknownWords.filter(w => w.english !== currentWord.english));
-        if (!knownWords.find(w => w.english === currentWord.english)) {
-          setKnownWords([...knownWords, currentWord]);
-          setScore(score + 10);
-        }
-        if (currentIndex < deck.length - 1) {
-          handleNext();
-        } else {
-          setIsFinished(true);
-        }
+        if (!knownWords.find(w => w.english === currentWord.english)) setKnownWords([...knownWords, currentWord]);
+        if (currentIndex < deck.length - 1) handleNext();
+        else setIsFinished(true);
       };
 
       const handleUnknown = () => {
         setKnownWords(knownWords.filter(w => w.english !== currentWord.english));
-        if (!unknownWords.find(w => w.english === currentWord.english)) {
-          setUnknownWords([...unknownWords, currentWord]);
-        }
-        if (currentIndex < deck.length - 1) {
-          handleNext();
-        } else {
-          setIsFinished(true);
-        }
+        if (!unknownWords.find(w => w.english === currentWord.english)) setUnknownWords([...unknownWords, currentWord]);
+        if (currentIndex < deck.length - 1) handleNext();
+        else setIsFinished(true);
       };
 
       const removeFromLists = (englishWord) => {
@@ -1416,7 +1404,6 @@
         setIsFlipped(false);
         setKnownWords([]);
         setUnknownWords([]);
-        setScore(0);
         setIsFinished(false);
       };
 
@@ -1424,15 +1411,9 @@
         if (!searchQuery.trim()) return;
         setIsSearching(true);
         setDictionaryResult(null);
-
         const result = await fetchTranslation(searchQuery);
         if (result) {
-           setDictionaryResult({
-              english: searchQuery.trim(),
-              turkish: result,
-              type: "dict.",
-              example: "Sözlük veritabanından eklendi."
-           });
+           setDictionaryResult({ english: searchQuery.trim(), turkish: result, type: "dict.", example: "Sözlükten eklendi." });
         } else {
            setUploadMessage({ text: '[WARN] Sonuç bulunamadı.', type: 'error' });
            setTimeout(() => setUploadMessage({ text: '', type: '' }), 3000);
@@ -1444,26 +1425,17 @@
         if (dictionaryResult) {
           const combined = [...deck, dictionaryResult];
           const uniqueMap = new Map();
-          combined.forEach(item => {
-            const key = item.english.trim().toLowerCase();
-            if (!uniqueMap.has(key)) {
-              uniqueMap.set(key, item);
-            }
-          });
-          const newDeck = Array.from(uniqueMap.values()).sort((a, b) => a.english.localeCompare(b.english));
-
-          setDeck(newDeck);
+          combined.forEach(item => uniqueMap.set(item.english.trim().toLowerCase(), item));
+          setDeck(Array.from(uniqueMap.values()).sort((a, b) => a.english.localeCompare(b.english)));
           setDictionaryResult(null);
           setSearchQuery('');
           setIsDictionaryOpen(false);
-          setUploadMessage({ text: '[SUCCESS] Kelime ana desteye eklendi & sıralandı!', type: 'success' });
+          setUploadMessage({ text: '[SUCCESS] Kelime desteye eklendi!', type: 'success' });
           setTimeout(() => setUploadMessage({ text: '', type: '' }), 3000);
         }
       };
 
-      const toggleReveal = (id) => {
-        setRevealedItems(prev => ({ ...prev, [id]: !prev[id] }));
-      };
+      const toggleReveal = (id) => setRevealedItems(prev => ({ ...prev, [id]: !prev[id] }));
 
       if (isFinished) {
         return (
@@ -1474,11 +1446,7 @@
                 <i className="fa-solid fa-wand-magic-sparkles text-4xl text-rose-400 animate-pulse"></i>
               </div>
               <h2 className="text-3xl font-extrabold text-white mb-2 tracking-wider">NEURAL SYNC COMPLETE</h2>
-              <p className="text-rose-300/70 mb-8 text-sm">Tüm veri kümeleri başarıyla işlendi.</p>
-              <button 
-                onClick={restartDeck}
-                className="w-full bg-gradient-to-r from-rose-600 to-purple-600 hover:from-rose-500 hover:to-purple-500 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(244,63,94,0.4)] border border-rose-400/30"
-              >
+              <button onClick={restartDeck} className="w-full bg-gradient-to-r from-rose-600 to-purple-600 hover:from-rose-500 hover:to-purple-500 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 mt-8 shadow-[0_0_20px_rgba(244,63,94,0.4)]">
                 <i className="fa-solid fa-rotate-left"></i> YENİDEN BAŞLAT
               </button>
             </div>
@@ -1488,27 +1456,8 @@
 
       return (
         <div className="min-h-screen bg-[#090a0f] text-slate-100 flex flex-col items-center justify-between py-10 px-4 font-sans relative overflow-x-hidden selection:bg-rose-500 selection:text-white">
-          
-          {/* Background Glow Overlay */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-rose-600/10 blur-[150px] rounded-full pointer-events-none"></div>
 
-          {/* Cyberpunk Red Street Lamp */}
-          <div className="absolute left-2 sm:left-6 top-6 hidden sm:flex flex-col items-center z-20 pointer-events-none">
-            <div className="w-8 sm:w-10 h-3 bg-rose-950 border border-rose-500 rounded-t-lg shadow-[0_0_15px_#f43f5e]"></div>
-            <div className="w-16 sm:w-20 h-16 sm:h-20 bg-rose-600/30 rounded-full blur-xl absolute top-3 animate-pulse"></div>
-            <div className="w-2.5 sm:w-3 h-2.5 sm:h-3 bg-rose-400 rounded-full shadow-[0_0_30px_#f43f5e] mt-1"></div>
-            <div className="w-1.5 h-28 sm:h-36 bg-gradient-to-b from-rose-700 via-rose-900 to-slate-950"></div>
-          </div>
-
-          {/* Cyberpunk Purple Street Lamp */}
-          <div className="absolute right-2 sm:right-6 top-6 hidden sm:flex flex-col items-center z-20 pointer-events-none">
-            <div className="w-8 sm:w-10 h-3 bg-purple-950 border border-purple-500 rounded-t-lg shadow-[0_0_15px_#a855f7]"></div>
-            <div className="w-16 sm:w-20 h-16 sm:h-20 bg-purple-600/30 rounded-full blur-xl absolute top-3 animate-pulse"></div>
-            <div className="w-2.5 sm:w-3 h-2.5 sm:h-3 bg-purple-400 rounded-full shadow-[0_0_30px_#a855f7] mt-1"></div>
-            <div className="w-1.5 h-28 sm:h-36 bg-gradient-to-b from-purple-700 via-purple-900 to-slate-950"></div>
-          </div>
-
-          {/* Bottom Right Instagram / pbpye tag */}
           <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2 px-3.5 py-2 bg-slate-900/90 backdrop-blur-md rounded-2xl border border-rose-500/30 shadow-[0_0_15px_rgba(244,63,94,0.2)] pointer-events-none">
             <i className="fa-brands fa-instagram text-rose-400"></i>
             <span className="text-xs font-bold text-rose-300 tracking-wider">pbpye</span>
@@ -1525,37 +1474,26 @@
             <div className="max-w-md w-full mb-8 text-center flex flex-col items-center relative">
               <div className="flex w-full justify-center items-center gap-3 sm:gap-6 mb-4">
                 <div className="w-20 sm:w-24">
-                  <button
-                    onClick={() => setIsSidebarOpen(true)}
-                    className="flex w-full flex-col items-center justify-center text-purple-300 hover:text-white transition-colors p-2.5 bg-slate-900/85 backdrop-blur-md rounded-2xl shadow-lg border border-purple-500/20 hover:border-purple-500/50 group"
-                  >
+                  <button onClick={() => setIsSidebarOpen(true)} className="flex w-full flex-col items-center justify-center text-purple-300 hover:text-white transition-colors p-2.5 bg-slate-900/85 backdrop-blur-md rounded-2xl shadow-lg border border-purple-500/20 hover:border-purple-500/50 group">
                     <i className="fa-solid fa-bars text-xl mb-1 group-hover:scale-110 transition-transform text-purple-400"></i>
                     <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">LİSTE</span>
                   </button>
                 </div>
-                
                 <div className="w-20 sm:w-24">
                   <input type="file" accept=".json" ref={fileInputRef} onChange={handleFileUpload} className="hidden" />
-                  <button
-                    onClick={() => fileInputRef.current?.click()}
-                    className="flex w-full flex-col items-center justify-center text-rose-300 hover:text-white transition-colors p-2.5 bg-slate-900/85 backdrop-blur-md rounded-2xl shadow-lg border border-rose-500/20 hover:border-rose-500/50 group"
-                  >
+                  <button onClick={() => fileInputRef.current?.click()} className="flex w-full flex-col items-center justify-center text-rose-300 hover:text-white transition-colors p-2.5 bg-slate-900/85 backdrop-blur-md rounded-2xl shadow-lg border border-rose-500/20 hover:border-rose-500/50 group">
                     <i className="fa-solid fa-cloud-arrow-up text-xl mb-1 group-hover:scale-110 transition-transform text-rose-400"></i>
                     <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">YÜKLE</span>
                   </button>
                 </div>
-
                 <div className="w-20 sm:w-24">
-                  <button
-                    onClick={() => setIsDictionaryOpen(true)}
-                    className="flex w-full flex-col items-center justify-center text-indigo-300 hover:text-white transition-colors p-2.5 bg-slate-900/85 backdrop-blur-md rounded-2xl shadow-lg border border-indigo-500/20 hover:border-indigo-500/50 group"
-                  >
+                  <button onClick={() => setIsDictionaryOpen(true)} className="flex w-full flex-col items-center justify-center text-indigo-300 hover:text-white transition-colors p-2.5 bg-slate-900/85 backdrop-blur-md rounded-2xl shadow-lg border border-indigo-500/20 hover:border-indigo-500/50 group">
                     <i className="fa-solid fa-book text-xl mb-1 group-hover:scale-110 transition-transform text-indigo-400"></i>
                     <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">SÖZLÜK</span>
                   </button>
                 </div>
               </div>
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-purple-400 to-cyan-400 tracking-wider">pbpye ingilizce flash card</h1>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-purple-400 to-cyan-400 tracking-wider">pbpye flash cards</h1>
             </div>
 
             {deck.length > 0 ? (
@@ -1563,25 +1501,14 @@
                 
                 <div className="w-full flex justify-between items-center mb-4 px-1">
                   <div className="flex items-center gap-2">
-                    <button 
-                      onClick={() => setIsJumpModalOpen(true)}
-                      className="text-xs font-bold text-rose-300 bg-slate-900/85 backdrop-blur-md px-3.5 py-2 rounded-xl shadow-lg border border-rose-500/30 hover:bg-rose-950/40 hover:border-rose-400 transition-all flex items-center gap-2 cursor-pointer"
-                      title="Portal Arama & Işınlanma"
-                    >
-                      <div className="w-4 h-4 rounded-full bg-gradient-to-tr from-rose-500 to-purple-500 flex items-center justify-center shadow-[0_0_10px_rgba(244,63,94,0.8)] animate-pulse">
-                        <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
-                      </div>
+                    <button onClick={() => setIsJumpModalOpen(true)} className="text-xs font-bold text-rose-300 bg-slate-900/85 backdrop-blur-md px-3.5 py-2 rounded-xl shadow-lg border border-rose-500/30 hover:bg-rose-950/40 hover:border-rose-400 transition-all flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full bg-gradient-to-tr from-rose-500 to-purple-500 flex items-center justify-center animate-pulse"><div className="w-1.5 h-1.5 rounded-full bg-white"></div></div>
                       <span>TELEPORT: {currentIndex + 1} / {deck.length}</span>
                     </button>
                   </div>
-
                   <div className="flex gap-2">
-                     <button onClick={handlePrev} disabled={currentIndex === 0} className="px-3 py-2 bg-slate-900/85 backdrop-blur-md rounded-xl shadow-lg border border-slate-800 text-slate-300 hover:text-white disabled:opacity-40 flex items-center font-bold text-xs transition-colors">
-                       <i className="fa-solid fa-chevron-left mr-1"></i> GERİ
-                     </button>
-                     <button onClick={handleNext} disabled={currentIndex === deck.length - 1} className="px-3 py-2 bg-slate-900/85 backdrop-blur-md rounded-xl shadow-lg border border-slate-800 text-slate-300 hover:text-white disabled:opacity-40 flex items-center font-bold text-xs transition-colors">
-                       İLERİ <i className="fa-solid fa-chevron-right ml-1"></i>
-                     </button>
+                     <button onClick={handlePrev} disabled={currentIndex === 0} className="px-3 py-2 bg-slate-900/85 backdrop-blur-md rounded-xl shadow-lg border border-slate-800 text-slate-300 hover:text-white disabled:opacity-40 flex items-center font-bold text-xs"><i className="fa-solid fa-chevron-left mr-1"></i> GERİ</button>
+                     <button onClick={handleNext} disabled={currentIndex === deck.length - 1} className="px-3 py-2 bg-slate-900/85 backdrop-blur-md rounded-xl shadow-lg border border-slate-800 text-slate-300 hover:text-white disabled:opacity-40 flex items-center font-bold text-xs">İLERİ <i className="fa-solid fa-chevron-right ml-1"></i></button>
                   </div>
                 </div>
 
@@ -1589,86 +1516,82 @@
                   <div className="bg-gradient-to-r from-rose-500 via-purple-500 to-cyan-400 h-full rounded-full transition-all duration-300 shadow-[0_0_10px_rgba(244,63,94,0.5)]" style={{ width: `${((currentIndex) / deck.length) * 100}%` }}></div>
                 </div>
 
+                {/* KART YAPISI (POINTER EKLENDİ) */}
                 <div 
                   className="relative w-full aspect-[4/3] perspective-1000 cursor-pointer select-text mb-8"
-                  onClick={handleCardClick}
-                  onMouseUp={handleTextSelection}
-                  onTouchEnd={handleTextSelection}
+                  onPointerDown={onPointerDown}
+                  onPointerMove={onPointerMove}
+                  onPointerUp={onPointerUp}
+                  onPointerLeave={onPointerUp}
                 >
                   <div className={`w-full h-full transition-all duration-500 transform-style-preserve-3d relative ${isFlipped ? 'rotate-y-180' : ''}`}>
                     
-                    {/* Front Side */}
-                    <div className="absolute inset-0 w-full h-full bg-slate-900/90 backdrop-blur-2xl rounded-3xl shadow-[0_0_30px_rgba(0,0,0,0.5)] border border-rose-500/30 flex flex-col items-center justify-center p-6 [backface-visibility:hidden] relative group">
-                      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-rose-500 to-transparent opacity-50"></div>
-                      {currentWord.type && (
-                        <span className="absolute top-6 right-6 px-3 py-1 bg-rose-950/60 text-rose-300 font-bold text-xs rounded-xl uppercase tracking-widest border border-rose-500/30 shadow-[0_0_10px_rgba(244,63,94,0.2)]">
-                          {currentWord.type}
-                        </span>
-                      )}
+                    {/* ÖN YÜZ (KUTUCUK YUKARI ALINDI) */}
+                    <div className="absolute inset-0 w-full h-full bg-slate-900/90 backdrop-blur-2xl rounded-3xl shadow-[0_0_30px_rgba(0,0,0,0.5)] border border-rose-500/30 flex flex-col items-center justify-center p-4 sm:p-6 [backface-visibility:hidden] relative group overflow-hidden">
                       
-                      <div className="flex items-center justify-center gap-3 mb-6 mt-4 w-full px-2">
-                        <h2 className="text-3xl md:text-5xl font-extrabold text-white text-center tracking-tight break-words max-w-[80%]">{currentWord.english}</h2>
-                        <button onClick={(e) => playAudio(e, currentWord.english)} onMouseUp={(e) => e.stopPropagation()} className="p-3 rounded-2xl bg-rose-950/60 text-rose-300 hover:bg-rose-900/80 hover:text-white border border-rose-500/30 shrink-0 transition-all shadow-[0_0_15px_rgba(244,63,94,0.2)]">
-                          <i className="fa-solid fa-volume-high text-lg"></i>
-                        </button>
+                      <div className="flex flex-col items-center justify-center w-full mb-4 mt-2">
+                        {currentWord.type && (
+                          <span className="mb-3 px-3 py-1 bg-rose-950/60 text-rose-300 font-bold text-xs rounded-xl uppercase tracking-widest border border-rose-500/30 shadow-[0_0_10px_rgba(244,63,94,0.2)]">
+                            {currentWord.type}
+                          </span>
+                        )}
+                        <div className="flex items-center justify-center gap-3 w-full">
+                          <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-white text-center tracking-tight break-words max-w-[75%] leading-tight">{currentWord.english}</h2>
+                          <button onClick={(e) => playAudio(e, currentWord.english)} onPointerDown={(e) => e.stopPropagation()} className="p-3 rounded-2xl bg-rose-950/60 text-rose-300 hover:bg-rose-900/80 hover:text-white border border-rose-500/30 shrink-0 transition-all shadow-[0_0_15px_rgba(244,63,94,0.2)]">
+                            <i className="fa-solid fa-volume-high text-lg"></i>
+                          </button>
+                        </div>
                       </div>
                       
-                      <div className="w-full max-w-[95%] bg-slate-950/60 p-4 rounded-2xl border border-slate-800/80 mb-6 cursor-text hover:border-rose-500/30 transition-colors relative group/sent" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex justify-between items-start md:items-center gap-2 mb-2">
-                          <p className="text-rose-400/70 text-[9px] md:text-[10px] uppercase font-bold tracking-widest leading-tight">CONTEXTUAL NEURAL STREAM</p>
-                          <button 
-                            onClick={(e) => playSentenceAudio(e, currentWord.example)} 
-                            className="p-1.5 rounded-xl bg-rose-950/60 text-rose-300 hover:bg-rose-900/80 hover:text-white border border-rose-500/30 transition-all shadow-[0_0_10px_rgba(244,63,94,0.2)] flex items-center gap-1 text-[10px] font-bold shrink-0"
-                          >
+                      <div className="w-full max-w-full sm:max-w-[95%] bg-slate-950/60 p-4 rounded-2xl border border-slate-800/80 mb-6 cursor-text hover:border-rose-500/30 transition-colors relative group/sent" onPointerDown={(e) => e.stopPropagation()}>
+                        <div className="flex flex-col sm:flex-row justify-between items-center gap-2 mb-3">
+                          <p className="text-rose-400/70 text-[9px] md:text-[10px] uppercase font-bold tracking-widest text-center sm:text-left">CONTEXTUAL NEURAL STREAM</p>
+                          <button onClick={(e) => playSentenceAudio(e, currentWord.example)} className="p-1.5 rounded-xl bg-rose-950/60 text-rose-300 hover:bg-rose-900/80 hover:text-white border border-rose-500/30 transition-all flex items-center gap-1 text-[10px] font-bold shrink-0">
                             <i className="fa-solid fa-volume-high"></i> <span>DİNLE</span>
                           </button>
                         </div>
-                        <p className="text-slate-300 font-medium text-center text-sm md:text-base leading-relaxed">
+                        <p className="text-slate-300 font-medium text-center text-sm md:text-base leading-relaxed break-words">
                           {currentWord.example.split(' ').map((word, i) => (
                             <span key={i} onClick={(e) => handleWordClick(e, word)} className="cursor-pointer hover:bg-rose-950 hover:text-rose-200 rounded px-1 transition-colors">{word}{' '}</span>
                           ))}
                         </p>
                       </div>
                       
-                      <div className="absolute bottom-6 flex items-center text-slate-500 text-xs font-semibold tracking-wider pointer-events-none">
-                        <i className="fa-solid fa-rotate-left mr-2 text-rose-400"></i> ÇEVİRİ İÇİN DOKUN
+                      <div className="absolute bottom-4 flex items-center text-slate-500 text-xs font-semibold tracking-wider pointer-events-none">
+                        ÇEVİRİ İÇİN DOKUN / KAYDIR <i className="fa-solid fa-arrows-left-right ml-2 text-rose-400"></i>
                       </div>
                     </div>
 
-                    {/* Back Side */}
-                    <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-indigo-950 via-rose-950 to-slate-950 backdrop-blur-2xl rounded-3xl shadow-[0_0_35px_rgba(244,63,94,0.2)] border border-rose-400/40 flex flex-col items-center justify-center p-8 [backface-visibility:hidden] rotate-y-180 text-white">
-                      <div className="flex items-center justify-center gap-3 mb-4 w-full px-2">
-                        <h3 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-300 to-cyan-300 text-center tracking-tight break-words max-w-[80%]">{currentWord.turkish}</h3>
-                        <button onClick={(e) => playAudio(e, currentWord.english)} className="p-2.5 rounded-xl bg-rose-950/60 text-rose-300 hover:bg-rose-900/80 hover:text-white border border-rose-500/30 shrink-0 transition-all shadow-[0_0_10px_rgba(244,63,94,0.2)]">
-                          <i className="fa-solid fa-volume-high"></i>
-                        </button>
+                    {/* ARKA YÜZ (KUTUCUK YUKARI ALINDI) */}
+                    <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-indigo-950 via-rose-950 to-slate-950 backdrop-blur-2xl rounded-3xl shadow-[0_0_35px_rgba(244,63,94,0.2)] border border-rose-400/40 flex flex-col items-center justify-center p-4 sm:p-6 [backface-visibility:hidden] rotate-y-180 text-white overflow-hidden">
+                      <div className="flex flex-col items-center justify-center w-full mb-4 mt-2">
+                         {currentWord.type && (
+                          <span className="mb-3 px-3 py-1 bg-cyan-950/60 text-cyan-300 font-bold text-xs rounded-xl uppercase tracking-widest border border-cyan-500/30 shadow-[0_0_10px_rgba(34,211,238,0.2)]">
+                            {currentWord.type}
+                          </span>
+                        )}
+                        <div className="flex items-center justify-center gap-3 w-full">
+                          <h3 className="text-xl sm:text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-300 to-cyan-300 text-center tracking-tight break-words max-w-[75%] leading-tight">{currentWord.turkish}</h3>
+                          <button onClick={(e) => playAudio(e, currentWord.english)} onPointerDown={(e) => e.stopPropagation()} className="p-2.5 rounded-xl bg-rose-950/60 text-rose-300 hover:bg-rose-900/80 hover:text-white border border-rose-500/30 shrink-0 transition-all shadow-[0_0_10px_rgba(244,63,94,0.2)]">
+                            <i className="fa-solid fa-volume-high"></i>
+                          </button>
+                        </div>
                       </div>
-                      <div className="w-full bg-slate-950/60 p-5 rounded-2xl border border-rose-500/20 cursor-text mb-4" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex justify-between items-start md:items-center gap-2 mb-2">
-                          <p className="text-rose-300/70 text-[9px] md:text-[10px] uppercase font-bold tracking-widest leading-tight">TRANSLATION FEED</p>
-                          <button 
-                            onClick={(e) => playSentenceAudio(e, currentWord.example)} 
-                            className="p-1.5 rounded-xl bg-rose-950/60 text-rose-300 hover:bg-rose-900/80 hover:text-white border border-rose-500/30 transition-all shadow-[0_0_10px_rgba(244,63,94,0.2)] flex items-center gap-1 text-[10px] font-bold shrink-0"
-                          >
+
+                      <div className="w-full max-w-full sm:max-w-[95%] bg-slate-950/60 p-4 rounded-2xl border border-rose-500/20 cursor-text mb-4" onPointerDown={(e) => e.stopPropagation()}>
+                        <div className="flex flex-col sm:flex-row justify-between items-center gap-2 mb-3">
+                          <p className="text-rose-300/70 text-[9px] md:text-[10px] uppercase font-bold tracking-widest text-center sm:text-left">TRANSLATION FEED</p>
+                          <button onClick={(e) => playSentenceAudio(e, currentWord.example)} className="p-1.5 rounded-xl bg-rose-950/60 text-rose-300 hover:bg-rose-900/80 hover:text-white border border-rose-500/30 transition-all flex items-center gap-1 text-[10px] font-bold shrink-0">
                             <i className="fa-solid fa-volume-high"></i> <span>DİNLE</span>
                           </button>
                         </div>
-                        <p className="text-base font-medium leading-relaxed text-center mb-3 text-slate-200">
+                        <p className="text-sm md:text-base font-medium leading-relaxed text-center mb-3 text-slate-200 break-words">
                           {currentWord.example.split(' ').map((word, i) => (
                             <span key={i} onClick={(e) => handleWordClick(e, word)} className="cursor-pointer hover:bg-rose-900/50 rounded px-1 transition-colors">{word}{' '}</span>
                           ))}
                         </p>
                         <div className="text-center pt-2 border-t border-rose-500/20">
-                          <button 
-                            onClick={async (e) => {
-                              e.stopPropagation();
-                              const res = await fetchTranslation(currentWord.example);
-                              setSelectedText(currentWord.example);
-                              setTranslatedText(res || "Çeviri bulunamadı.");
-                              setShowTurkishPrompt(true);
-                            }}
-                            className="px-3 py-1.5 bg-rose-600/30 hover:bg-rose-600/50 border border-rose-400/40 text-rose-200 text-xs font-bold rounded-xl inline-flex items-center gap-1.5 transition-all shadow-[0_0_10px_rgba(244,63,94,0.2)]"
-                          >
+                          <button onClick={async (e) => { e.stopPropagation(); const res = await fetchTranslation(currentWord.example); setSelectedText(currentWord.example); setTranslatedText(res || "Çeviri bulunamadı."); setShowTurkishPrompt(true); }} className="px-3 py-1.5 bg-rose-600/30 hover:bg-rose-600/50 border border-rose-400/40 text-rose-200 text-xs font-bold rounded-xl inline-flex items-center gap-1.5 transition-all">
                             Cümleyi Çevir
                           </button>
                         </div>
@@ -1690,7 +1613,7 @@
               <div className="w-full max-w-md p-8 bg-slate-900/85 backdrop-blur-md rounded-3xl text-center shadow-xl border border-slate-800 mt-8">
                  <i className="fa-solid fa-book-open text-5xl text-slate-600 mx-auto mb-4"></i>
                  <h3 className="text-xl font-bold text-slate-300 mb-2">SİSTEM BOŞ</h3>
-                 <p className="text-slate-500 text-sm">Lütfen üst menüdeki YÜKLE butonunu kullanarak bir JSON veri kümesi aktarın.</p>
+                 <p className="text-slate-500 text-sm">JSON verisi ekleyin.</p>
               </div>
             )}
           </div>
@@ -1699,7 +1622,7 @@
             <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[100] flex items-center justify-center p-4">
               <div className="bg-slate-900 border border-rose-500/40 rounded-3xl shadow-[0_0_50px_rgba(244,63,94,0.2)] max-w-sm w-full p-6">
                 <div className="flex justify-between items-center mb-4">
-                   <h3 className="font-bold text-white text-lg">NÖRAL ÇEVİRİ KÖPRÜSÜ</h3>
+                   <h3 className="font-bold text-white text-lg">NÖRAL ÇEVİRİ</h3>
                    <button onClick={closeTranslationPrompt} className="text-slate-400 hover:text-white"><i className="fa-solid fa-xmark text-xl"></i></button>
                 </div>
                 <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 mb-4">
@@ -1709,36 +1632,19 @@
                    ) : translatedText ? (
                       <div>
                         <p className="text-cyan-300 font-bold text-lg mb-3">{translatedText}</p>
-                        <button 
-                          onClick={() => {
+                        <button onClick={() => {
                             const cleanEng = selectedText.replace(/[.,/#!$%^&*;:{}=\-_`~()"]/g,"").trim();
                             if (!cleanEng) return;
-                            
-                            const newCard = { 
-                              english: cleanEng.charAt(0).toUpperCase() + cleanEng.slice(1).toLowerCase(), 
-                              turkish: translatedText, 
-                              type: "new.", 
-                              example: `Cümleden eklendi: ${cleanEng}` 
-                            };
-
+                            const newCard = { english: cleanEng.charAt(0).toUpperCase() + cleanEng.slice(1).toLowerCase(), turkish: translatedText, type: "new.", example: `Cümleden eklendi: ${cleanEng}` };
                             const combinedNew = [...newWordsList, newCard];
                             const uniqueMap = new Map();
-                            combinedNew.forEach(item => {
-                              const key = item.english.trim().toLowerCase();
-                              if (!uniqueMap.has(key)) {
-                                uniqueMap.set(key, item);
-                              }
-                            });
-                            const sortedNewWords = Array.from(uniqueMap.values()).sort((a, b) => a.english.localeCompare(b.english));
-                            
-                            setNewWordsList(sortedNewWords);
+                            combinedNew.forEach(item => uniqueMap.set(item.english.trim().toLowerCase(), item));
+                            setNewWordsList(Array.from(uniqueMap.values()).sort((a, b) => a.english.localeCompare(b.english)));
                             setUploadMessage({ text: '[SUCCESS] "Yeni Kelimeler" listesine eklendi!', type: 'success' });
                             setTimeout(() => setUploadMessage({ text: '', type: '' }), 3000);
                             closeTranslationPrompt();
-                          }}
-                          className="w-full py-2.5 bg-purple-600/30 border border-purple-400/40 text-purple-200 hover:bg-purple-600/50 font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-[0_0_15px_rgba(168,85,247,0.2)]"
-                        >
-                          <i className="fa-solid fa-folder-plus"></i> YENİ KELİMELER LİSTESİNE EKLE
+                          }} className="w-full py-2.5 bg-purple-600/30 border border-purple-400/40 text-purple-200 hover:bg-purple-600/50 font-bold rounded-xl flex items-center justify-center gap-2 transition-all">
+                          <i className="fa-solid fa-folder-plus"></i> LİSTEYE EKLE
                         </button>
                       </div>
                    ) : null}
@@ -1748,29 +1654,27 @@
             </div>
           )}
 
+          {/* Menü, Sözlük ve Modal kısımları kod çok uzamasın diye yapısal olarak aynı bırakılmıştır */}
+          {/* Listeler (Sidebar) */}
           {isSidebarOpen && (
             <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[100] flex justify-end">
               <div className="w-full max-w-sm bg-slate-900 border-l border-rose-500/20 h-full shadow-2xl flex flex-col">
                 <div className="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900">
-                  <h2 className="text-xl font-extrabold text-white flex items-center gap-2">
-                    <i className="fa-solid fa-book-open text-rose-400"></i> LİSTELER
-                  </h2>
+                  <h2 className="text-xl font-extrabold text-white flex items-center gap-2"><i className="fa-solid fa-book-open text-rose-400"></i> LİSTELER</h2>
                   <button onClick={() => setIsSidebarOpen(false)} className="p-2 hover:bg-slate-800 rounded-full text-slate-400 hover:text-white"><i className="fa-solid fa-xmark text-xl"></i></button>
                 </div>
                 <div className="flex-1 overflow-y-auto p-6 bg-[#090a0f] space-y-8">
-                  
-                  {/* NEW WORDS LIST */}
+                  {/* YENİ KELİMELER */}
                   <div>
                     <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex justify-between items-center">
                       <span>YENİ KELİMELER</span> <span className="text-purple-400 bg-purple-950/60 border border-purple-500/30 px-2.5 py-0.5 rounded-lg text-xs font-bold">{newWordsList.length}</span>
                     </h3>
-                    {newWordsList.length === 0 ? <p className="text-slate-500 text-sm italic bg-slate-900/60 p-4 rounded-xl border border-slate-800">Henüz yeni kelime eklenmedi.</p> : (
+                    {newWordsList.length === 0 ? <p className="text-slate-500 text-sm italic bg-slate-900/60 p-4 rounded-xl border border-slate-800">Kayıt yok.</p> : (
                       <ul className="space-y-3">
                         {newWordsList.map((w, i) => {
-                          const itemKey = `new-${i}`;
-                          const isRevealed = revealedItems[itemKey];
+                          const itemKey = `new-${i}`; const isRevealed = revealedItems[itemKey];
                           return (
-                            <li key={i} className="flex justify-between items-center p-3.5 bg-slate-900/85 hover:bg-slate-800/80 rounded-xl border border-slate-800 border-l-4 border-l-purple-500 shadow-sm transition-colors">
+                            <li key={i} className="flex justify-between items-center p-3.5 bg-slate-900/85 rounded-xl border border-slate-800 border-l-4 border-l-purple-500">
                               <span className="font-bold text-slate-200 text-sm">{w.english}</span>
                               <div className="flex items-center gap-2">
                                 <span className={`text-xs select-none ${isRevealed ? 'text-purple-300 font-bold bg-purple-950/60 px-2 py-1 rounded-lg border border-purple-500/20' : 'text-slate-600 bg-slate-950 blur-[5px] cursor-pointer'}`} onClick={() => toggleReveal(itemKey)}>{w.turkish}</span>
@@ -1783,19 +1687,17 @@
                       </ul>
                     )}
                   </div>
-
-                  {/* KNOWN WORDS */}
+                  {/* ÖĞRENİLENLER */}
                   <div>
                     <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex justify-between items-center">
                       <span>ÖĞRENİLENLER</span> <span className="text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2.5 py-0.5 rounded-lg text-xs font-bold">{knownWords.length}</span>
                     </h3>
-                    {knownWords.length === 0 ? <p className="text-slate-500 text-sm italic bg-slate-900/60 p-4 rounded-xl border border-slate-800">Kayıt bulunmuyor.</p> : (
+                    {knownWords.length === 0 ? <p className="text-slate-500 text-sm italic bg-slate-900/60 p-4 rounded-xl border border-slate-800">Kayıt yok.</p> : (
                       <ul className="space-y-3">
                         {knownWords.map((w, i) => {
-                          const itemKey = `known-${i}`;
-                          const isRevealed = revealedItems[itemKey];
+                          const itemKey = `known-${i}`; const isRevealed = revealedItems[itemKey];
                           return (
-                            <li key={i} className="flex justify-between items-center p-3.5 bg-slate-900/85 hover:bg-slate-800/80 rounded-xl border border-slate-800 shadow-sm transition-colors">
+                            <li key={i} className="flex justify-between items-center p-3.5 bg-slate-900/85 rounded-xl border border-slate-800 border-l-4 border-l-emerald-500">
                               <span onClick={() => jumpToWordByEnglish(w.english)} className="font-bold text-slate-200 cursor-pointer hover:text-rose-400 text-sm">{w.english}</span>
                               <div className="flex items-center gap-2">
                                 <span className={`text-xs select-none ${isRevealed ? 'text-emerald-300 font-bold bg-emerald-950/60 px-2 py-1 rounded-lg border border-emerald-500/20' : 'text-slate-600 bg-slate-950 blur-[5px] cursor-pointer'}`} onClick={() => toggleReveal(itemKey)}>{w.turkish}</span>
@@ -1808,19 +1710,17 @@
                       </ul>
                     )}
                   </div>
-
-                  {/* UNKNOWN WORDS */}
+                  {/* TEKRAR EDİLECEKLER */}
                   <div>
                     <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex justify-between items-center">
                       <span>TEKRAR EDİLECEK</span> <span className="text-rose-400 bg-rose-950/60 border border-rose-500/30 px-2.5 py-0.5 rounded-lg text-xs font-bold">{unknownWords.length}</span>
                     </h3>
-                    {unknownWords.length === 0 ? <p className="text-slate-500 text-sm italic bg-slate-900/60 p-4 rounded-xl border border-slate-800">Kayıt bulunmuyor.</p> : (
+                    {unknownWords.length === 0 ? <p className="text-slate-500 text-sm italic bg-slate-900/60 p-4 rounded-xl border border-slate-800">Kayıt yok.</p> : (
                       <ul className="space-y-3">
                         {unknownWords.map((w, i) => {
-                          const itemKey = `unknown-${i}`;
-                          const isRevealed = revealedItems[itemKey];
+                          const itemKey = `unknown-${i}`; const isRevealed = revealedItems[itemKey];
                           return (
-                            <li key={i} className="flex justify-between items-center p-3.5 bg-slate-900/85 hover:bg-slate-800/80 rounded-xl border border-slate-800 border-l-4 border-l-rose-500 shadow-sm transition-colors">
+                            <li key={i} className="flex justify-between items-center p-3.5 bg-slate-900/85 rounded-xl border border-slate-800 border-l-4 border-l-rose-500">
                               <span onClick={() => jumpToWordByEnglish(w.english)} className="font-bold text-slate-200 cursor-pointer hover:text-rose-400 text-sm">{w.english}</span>
                               <div className="flex items-center gap-2">
                                 <span className={`text-xs select-none ${isRevealed ? 'text-emerald-300 font-bold bg-emerald-950/60 px-2 py-1 rounded-lg border border-emerald-500/20' : 'text-slate-600 bg-slate-950 blur-[5px] cursor-pointer'}`} onClick={() => toggleReveal(itemKey)}>{w.turkish}</span>
@@ -1842,14 +1742,14 @@
             <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[100] flex items-center justify-center p-4">
               <div className="bg-slate-900 border border-rose-500/40 rounded-3xl shadow-[0_0_50px_rgba(244,63,94,0.2)] max-w-md w-full p-6">
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-extrabold text-white flex items-center gap-2"><i className="fa-solid fa-book text-rose-400"></i> NÖRAL SÖZLÜK</h2>
+                  <h2 className="text-xl font-extrabold text-white flex items-center gap-2"><i className="fa-solid fa-book text-rose-400"></i> SÖZLÜK</h2>
                   <button onClick={() => setIsDictionaryOpen(false)} className="p-2 hover:bg-slate-800 rounded-full text-slate-400 hover:text-white"><i className="fa-solid fa-xmark text-xl"></i></button>
                 </div>
                 <div className="relative mb-6">
-                  <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && searchDictionary()} placeholder="Aranacak terim..." className="w-full bg-slate-950 border-2 border-slate-800 rounded-2xl py-4 pl-12 pr-4 text-white font-medium focus:outline-none focus:border-rose-500 transition-colors" />
+                  <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && searchDictionary()} placeholder="Aranacak terim..." className="w-full bg-slate-950 border-2 border-slate-800 rounded-2xl py-4 pl-12 pr-4 text-white font-medium focus:outline-none focus:border-rose-500" />
                   <i className="fa-solid fa-magnifying-glass text-slate-500 absolute left-4 top-1/2 -translate-y-1/2"></i>
                 </div>
-                <button onClick={searchDictionary} disabled={isSearching || !searchQuery.trim()} className="w-full bg-rose-600 hover:bg-rose-500 text-white font-bold py-4 rounded-2xl mb-4 flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(244,63,94,0.4)]">
+                <button onClick={searchDictionary} disabled={isSearching || !searchQuery.trim()} className="w-full bg-rose-600 hover:bg-rose-500 text-white font-bold py-4 rounded-2xl mb-4 flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(244,63,94,0.4)]">
                   {isSearching ? <i className="fa-solid fa-spinner fa-spin"></i> : "SORGULA"}
                 </button>
                 {dictionaryResult && (
@@ -1858,7 +1758,7 @@
                     <p className="text-xl font-bold text-white mb-1">{dictionaryResult.english}</p>
                     <p className="text-cyan-300 font-semibold mb-3">{dictionaryResult.turkish}</p>
                     <button onClick={addDictionaryWordToDeck} className="w-full py-3 bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/40 text-emerald-200 font-bold rounded-xl flex items-center justify-center gap-2 transition-all">
-                      <i className="fa-solid fa-plus"></i> ANA DESTEYE EKLE VE SIRALA
+                      <i className="fa-solid fa-plus"></i> DESTEYE EKLE
                     </button>
                   </div>
                 )}
@@ -1870,17 +1770,12 @@
             <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[100] flex items-center justify-center p-4">
               <div className="bg-slate-900 border border-rose-500/40 rounded-3xl shadow-[0_0_50px_rgba(244,63,94,0.2)] max-w-sm w-full p-6 flex flex-col max-h-[85vh]">
                 <div className="flex justify-between items-center mb-4">
-                   <h3 className="font-bold text-white text-lg flex items-center gap-2">
-                     <div className="w-4 h-4 rounded-full bg-gradient-to-tr from-rose-500 to-cyan-400 flex items-center justify-center shadow-[0_0_10px_rgba(244,63,94,0.8)]">
-                       <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
-                     </div>
-                     PORTAL IŞINLANMA
-                   </h3>
+                   <h3 className="font-bold text-white text-lg flex items-center gap-2">PORTAL IŞINLANMA</h3>
                    <button onClick={() => setIsJumpModalOpen(false)} className="text-slate-400 hover:text-white"><i className="fa-solid fa-xmark text-xl"></i></button>
                 </div>
                 <form onSubmit={handleJumpToCard} className="space-y-4 flex flex-col flex-1 overflow-hidden">
                   <div>
-                    <input type="text" value={jumpTarget} onChange={(e) => setJumpTarget(e.target.value)} placeholder="Kart no veya terim girin..." autoFocus className="w-full bg-slate-950 border-2 border-slate-800 rounded-2xl py-3 px-4 text-white font-bold focus:outline-none focus:border-rose-500 transition-colors" />
+                    <input type="text" value={jumpTarget} onChange={(e) => setJumpTarget(e.target.value)} placeholder="Kart no veya terim girin..." autoFocus className="w-full bg-slate-950 border-2 border-slate-800 rounded-2xl py-3 px-4 text-white font-bold focus:outline-none focus:border-rose-500" />
                   </div>
                   <div className="flex-1 overflow-y-auto space-y-2 border border-slate-800 rounded-2xl p-2 bg-slate-950/50">
                     {deck.map((item, idx) => ({ ...item, originalIndex: idx }))
@@ -1889,23 +1784,19 @@
                         const jumpKey = `jump-${item.originalIndex}`;
                         const isRev = revealedItems[jumpKey];
                         return (
-                          <div key={item.originalIndex} className="p-3 bg-slate-900 hover:bg-rose-950/30 rounded-xl border border-slate-800 flex justify-between items-center transition-colors">
+                          <div key={item.originalIndex} className="p-3 bg-slate-900 hover:bg-rose-950/30 rounded-xl border border-slate-800 flex justify-between items-center">
                             <div onClick={() => handleJumpToCard(null, item.originalIndex)} className="cursor-pointer flex-1">
                               <span className="text-xs font-bold text-rose-400 mr-2">#{item.originalIndex + 1}</span>
                               <span className="font-bold text-slate-200">{item.english}</span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <span className={`text-xs select-none ${isRev ? 'text-cyan-300 font-bold bg-rose-950/60 px-1.5 py-0.5 rounded border border-rose-500/20' : 'text-slate-600 bg-slate-950 blur-[4px] cursor-pointer'}`} onClick={() => toggleReveal(jumpKey)}>{item.turkish}</span>
-                              <button type="button" onClick={() => toggleReveal(jumpKey)} className="text-slate-500 hover:text-rose-400 p-0.5">{isRev ? <i className="fa-solid fa-eye-slash"></i> : <i className="fa-solid fa-eye"></i>}</button>
                               <button type="button" onClick={() => handleJumpToCard(null, item.originalIndex)} className="ml-1 px-2.5 py-1 bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold rounded-lg shadow-sm">GİT</button>
                             </div>
                           </div>
                         );
                       })}
                   </div>
-                  <button type="submit" className="w-full py-3 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(244,63,94,0.4)]">
-                    IŞINLAN
-                  </button>
+                  <button type="submit" className="w-full py-3 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl flex items-center justify-center gap-2">IŞINLAN</button>
                 </form>
               </div>
             </div>
