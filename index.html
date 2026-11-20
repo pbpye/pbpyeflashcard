@@ -1353,23 +1353,27 @@
         }
         return -1;
       };
-
       const handleNext = () => {
         const n = findNext(currentIndex);
-        if (n !== -1) {
-          setCurrentIndex(n);
+        if (n === -1) return;
+        if (isFlipped) {
           setIsFlipped(false);
+          setTimeout(() => setCurrentIndex(n), 550);
+        } else {
+          setCurrentIndex(n);
         }
       };
 
       const handlePrev = () => {
         const p = findPrev(currentIndex);
-        if (p !== -1) {
-          setCurrentIndex(p);
+        if (p === -1) return;
+        if (isFlipped) {
           setIsFlipped(false);
+          setTimeout(() => setCurrentIndex(p), 550);
+        } else {
+          setCurrentIndex(p);
         }
       };
-
       
   
 
@@ -1715,10 +1719,10 @@
                 </div>
 
                 <div className="flex gap-4 w-full justify-center">
-                 <button onClick={(e) => { e.stopPropagation(); setIsFlipped(false); setTimeout(() => handleUnknown(), 150); }} className="flex-1 bg-slate-900/85 backdrop-blur-md border border-rose-500/30 hover:bg-rose-950/40 text-rose-400 font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg">
+                 <button onClick={(e) => { e.stopPropagation(); setIsFlipped(false); setTimeout(() => handleUnknown(), isFlipped ? 550 : 0); }} className="flex-1 bg-slate-900/85 backdrop-blur-md border border-rose-500/30 hover:bg-rose-950/40 text-rose-400 font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg">
                     <i className="fa-solid fa-xmark text-lg"></i> TEKRAR ET
                   </button>
-                  <button onClick={(e) => { e.stopPropagation(); setIsFlipped(false); setTimeout(() => handleKnown(), 150); }} className="flex-1 bg-slate-900/85 backdrop-blur-md border border-emerald-500/30 hover:bg-emerald-950/40 text-emerald-400 font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg">
+                  <button onClick={(e) => { e.stopPropagation(); setIsFlipped(false); setTimeout(() => handleKnown(), isFlipped ? 550 : 0); }} className="flex-1 bg-slate-900/85 backdrop-blur-md border border-emerald-500/30 hover:bg-emerald-950/40 text-emerald-400 font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg">
                     <i className="fa-solid fa-check text-lg"></i> ÖĞRENDİM
                   </button>
                 </div>
