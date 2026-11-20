@@ -1337,12 +1337,6 @@
         }
       };
 
-      const handleNext = () => {
-        if (currentIndex < deck.length - 1) {
-          setCurrentIndex(currentIndex + 1);
-          setIsFlipped(false);
-        }
-      };
             const hiddenSet = new Set([...knownWords, ...unknownWords].map(w => w.english.toLowerCase()));
       const isHiddenIdx = (i) => hiddenSet.has(deck[i].english.toLowerCase());
 
@@ -1620,7 +1614,7 @@
                   </div>
 
                   <div className="flex gap-2">
-                     <button onClick={handlePrev} disabled={currentIndex === -1} className="px-3 py-2 bg-slate-900/85 backdrop-blur-md rounded-xl shadow-lg border border-slate-800 text-slate-300 hover:text-white disabled:opacity-40 flex items-center font-bold text-xs transition-colors">
+                     <button onClick={handlePrev} disabled={findPrev(currentIndex) === -1} className="px-3 py-2 bg-slate-900/85 backdrop-blur-md rounded-xl shadow-lg border border-slate-800 text-slate-300 hover:text-white disabled:opacity-40 flex items-center font-bold text-xs transition-colors">
                        <i className="fa-solid fa-chevron-left mr-1"></i> GERİ
                      </button>
                      <button onClick={handleNext} disabled={findNext(currentIndex) === -1} className="px-3 py-2 bg-slate-900/85 backdrop-blur-md rounded-xl shadow-lg border border-slate-800 text-slate-300 hover:text-white disabled:opacity-40 flex items-center font-bold text-xs transition-colors">
