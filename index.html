@@ -1090,52 +1090,47 @@
 
     const translationCache = new Map();
 
-    function App() {
+       function App() {
       const [isLocked, setIsLocked] = React.useState(() => localStorage.getItem('app_unlocked_v1') !== 'true');
-  const [passwordInput, setPasswordInput] = React.useState('');
-  const [passwordError, setPasswordError] = React.useState(false);
+      const [passwordInput, setPasswordInput] = React.useState('');
+      const [passwordError, setPasswordError] = React.useState(false);
 
-  const handleLogin = (e) => {
-     e.preventDefault();
-      if (passwordInput === 'pbpye31') { 
+      const handleLogin = (e) => {
+        e.preventDefault();
+        if (passwordInput === 'pbpye31') {
           localStorage.setItem('app_unlocked_v1', 'true');
-          window.location.reload(); // Otomatik F5 atar ve siyah ekranı engeller
-      } else {
+          setIsLocked(false);
+        } else {
           setPasswordError(true);
           setPasswordInput('');
-      }
-  };
+        }
+      };
 
-      
       if (isLocked) return (
-          <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 font-sans">
-              <div className="bg-slate-900/85 backdrop-blur-md border border-slate-700 p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center">
-                  <div className="w-16 h-16 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
-                      <i className="fa-solid fa-lock"></i>
-                  </div>
-                  <h2 className="text-2xl font-bold text-white mb-2">Uygulama Kilitli</h2>
-                  <p className="text-slate-400 mb-6 text-sm">Devam etmek için lütfen giriş şifresini yazın.</p>
-                  
-                  <form onSubmit={handleLogin} className="flex flex-col gap-4">
-                      <input 
-                          type="password" 
-                          value={passwordInput}
-                          onChange={(e) => { setPasswordInput(e.target.value); setPasswordError(false); }}
-                          placeholder="Şifrenizi girin..."
-                          className={`w-full bg-slate-800 border ${passwordError ? 'border-rose-500' : 'border-slate-600'} text-white px-4 py-3 rounded-xl focus:outline-none focus:border-blue-500 transition-colors text-center tracking-widest`}
-                      />
-                      {passwordError && <span className="text-rose-400 text-xs font-semibold">Hatalı şifre, tekrar deneyin!</span>}
-                      <button 
-                          type="submit" 
-                          className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-lg flex justify-center items-center gap-2"
-                      >
-                          Giriş Yap <i className="fa-solid fa-arrow-right"></i>
-                      </button>
-                  </form>
-              </div>
+        <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 font-sans">
+          <div className="bg-slate-900/85 backdrop-blur-md border border-slate-700 p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center">
+            <div className="w-16 h-16 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
+              <i className="fa-solid fa-lock"></i>
+            </div>
+            <h2 className="text-2xl font-bold text-white mb-2">Uygulama Kilitli</h2>
+            <p className="text-slate-400 mb-6 text-sm">Devam etmek için lütfen giriş şifresini yazın.</p>
+            <form onSubmit={handleLogin} className="flex flex-col gap-4">
+              <input
+                type="password"
+                value={passwordInput}
+                onChange={(e) => { setPasswordInput(e.target.value); setPasswordError(false); }}
+                placeholder="Şifrenizi girin..."
+                className={`w-full bg-slate-800 border ${passwordError ? 'border-rose-500' : 'border-slate-600'} text-white px-4 py-3 rounded-xl focus:outline-none focus:border-blue-500 transition-colors text-center tracking-widest`}
+              />
+              {passwordError && <span className="text-rose-400 text-xs font-semibold">Hatalı şifre, tekrar deneyin!</span>}
+              <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-lg flex justify-center items-center gap-2">
+                Giriş Yap <i className="fa-solid fa-arrow-right"></i>
+              </button>
+            </form>
           </div>
+        </div>
       );
-      
+
       if (jsonError) {
         return (
           <div className="min-h-screen bg-[#090a0f] flex items-center justify-center p-4">
@@ -1154,6 +1149,10 @@
         );
       }
 
+      return <FlashcardApp />;
+    }
+
+    function FlashcardApp() {
       // LocalStorage'dan verileri çek veya varsayılanları kullan
       const [deck, setDeck] = useState(() => {
         const saved = localStorage.getItem('pbpye_deck');
@@ -1204,22 +1203,40 @@
       const fileInputRef = useRef(null);
       const [uploadMessage, setUploadMessage] = useState({ text: '', type: '' });
 
-      const fetchTranslation = async (text) => {
+            const fetchTranslation = async (text) => {
         const cacheKey = text.toLowerCase();
         if (translationCache.has(cacheKey)) {
           return translationCache.get(cacheKey);
         }
+        // 1. Deneme: Google
         try {
           const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=tr&dt=t&q=${encodeURIComponent(text)}`;
           const res = await fetch(url);
-          const data = await res.json();
-          if (data && data[0]) {
-            const finalTranslation = data[0].map(item => item[0]).join('');
-            translationCache.set(cacheKey, finalTranslation);
-            return finalTranslation;
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data[0]) {
+              const finalTranslation = data[0].map(item => item[0]).join('');
+              translationCache.set(cacheKey, finalTranslation);
+              return finalTranslation;
+            }
           }
         } catch (err) {
-          console.error("Çeviri hatası:", err);
+          console.error("Google çeviri hatası:", err);
+        }
+        // 2. Deneme: MyMemory (yedek)
+        try {
+          const url2 = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|tr`;
+          const res2 = await fetch(url2);
+          if (res2.ok) {
+            const data2 = await res2.json();
+            const t = data2 && data2.responseData && data2.responseData.translatedText;
+            if (t) {
+              translationCache.set(cacheKey, t);
+              return t;
+            }
+          }
+        } catch (err) {
+          console.error("Yedek çeviri hatası:", err);
         }
         return null;
       };
@@ -1326,13 +1343,41 @@
           setIsFlipped(false);
         }
       };
+            const hiddenSet = new Set([...knownWords, ...unknownWords].map(w => w.english.toLowerCase()));
+      const isHiddenIdx = (i) => hiddenSet.has(deck[i].english.toLowerCase());
 
-      const handlePrev = () => {
-        if (currentIndex > 0) {
-          setCurrentIndex(currentIndex - 1);
+      const findNext = (from) => {
+        for (let i = from + 1; i < deck.length; i++) {
+          if (!isHiddenIdx(i)) return i;
+        }
+        return -1;
+      };
+
+      const findPrev = (from) => {
+        for (let i = from - 1; i >= 0; i--) {
+          if (!isHiddenIdx(i)) return i;
+        }
+        return -1;
+      };
+
+      const handleNext = () => {
+        const n = findNext(currentIndex);
+        if (n !== -1) {
+          setCurrentIndex(n);
           setIsFlipped(false);
         }
       };
+
+      const handlePrev = () => {
+        const p = findPrev(currentIndex);
+        if (p !== -1) {
+          setCurrentIndex(p);
+          setIsFlipped(false);
+        }
+      };
+
+      
+  
 
       const handleJumpToCard = (e, specificIndex = null) => {
         if (e) e.preventDefault();
@@ -1381,8 +1426,10 @@
           setKnownWords([...knownWords, currentWord]);
           setScore(score + 10);
         }
-        if (currentIndex < deck.length - 1) {
-          handleNext();
+               const n = findNext(currentIndex);
+        if (n !== -1) {
+          setCurrentIndex(n);
+          setIsFlipped(false);
         } else {
           setIsFinished(true);
         }
@@ -1393,8 +1440,10 @@
         if (!unknownWords.find(w => w.english === currentWord.english)) {
           setUnknownWords([...unknownWords, currentWord]);
         }
-        if (currentIndex < deck.length - 1) {
-          handleNext();
+               const n = findNext(currentIndex);
+        if (n !== -1) {
+          setCurrentIndex(n);
+          setIsFlipped(false);
         } else {
           setIsFinished(true);
         }
@@ -1571,10 +1620,10 @@
                   </div>
 
                   <div className="flex gap-2">
-                     <button onClick={handlePrev} disabled={currentIndex === 0} className="px-3 py-2 bg-slate-900/85 backdrop-blur-md rounded-xl shadow-lg border border-slate-800 text-slate-300 hover:text-white disabled:opacity-40 flex items-center font-bold text-xs transition-colors">
+                     <button onClick={handlePrev} disabled={currentIndex === -1} className="px-3 py-2 bg-slate-900/85 backdrop-blur-md rounded-xl shadow-lg border border-slate-800 text-slate-300 hover:text-white disabled:opacity-40 flex items-center font-bold text-xs transition-colors">
                        <i className="fa-solid fa-chevron-left mr-1"></i> GERİ
                      </button>
-                     <button onClick={handleNext} disabled={currentIndex === deck.length - 1} className="px-3 py-2 bg-slate-900/85 backdrop-blur-md rounded-xl shadow-lg border border-slate-800 text-slate-300 hover:text-white disabled:opacity-40 flex items-center font-bold text-xs transition-colors">
+                     <button onClick={handleNext} disabled={findNext(currentIndex) === -1} className="px-3 py-2 bg-slate-900/85 backdrop-blur-md rounded-xl shadow-lg border border-slate-800 text-slate-300 hover:text-white disabled:opacity-40 flex items-center font-bold text-xs transition-colors">
                        İLERİ <i className="fa-solid fa-chevron-right ml-1"></i>
                      </button>
                   </div>
@@ -1585,7 +1634,7 @@
                 </div>
 
                 <div 
-                  className="relative w-full aspect-[4/3] perspective-1000 cursor-pointer select-text mb-8"
+                 className="relative w-full h-[460px] sm:h-auto sm:aspect-[4/3] perspective-1000 cursor-pointer select-text mb-8"
                   onClick={handleCardClick}
                   onMouseUp={handleTextSelection}
                   onTouchEnd={handleTextSelection}
@@ -1593,7 +1642,7 @@
                   <div className={`w-full h-full transition-all duration-500 transform-style-preserve-3d relative ${isFlipped ? 'rotate-y-180' : ''}`}>
                     
                     {/* Front Side */}
-                    <div className="absolute inset-0 w-full h-full bg-slate-900/90 backdrop-blur-2xl rounded-3xl shadow-[0_0_30px_rgba(0,0,0,0.5)] border border-rose-500/30 flex flex-col items-center justify-center p-6 [backface-visibility:hidden] relative group">
+                    <div className="absolute inset-0 w-full h-full bg-slate-900/90 backdrop-blur-2xl rounded-3xl shadow-[0_0_30px_rgba(0,0,0,0.5)] border border-rose-500/30 flex flex-col items-center justify-center p-4 sm:p-6 pb-12 overflow-y-auto [backface-visibility:hidden] relative group">
                       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-rose-500 to-transparent opacity-50"></div>
                       {currentWord.type && (
                         <span className="absolute top-6 right-6 px-3 py-1 bg-rose-950/60 text-rose-300 font-bold text-xs rounded-xl uppercase tracking-widest border border-rose-500/30 shadow-[0_0_10px_rgba(244,63,94,0.2)]">
@@ -1630,7 +1679,7 @@
                     </div>
 
                     {/* Back Side */}
-                    <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-indigo-950 via-rose-950 to-slate-950 backdrop-blur-2xl rounded-3xl shadow-[0_0_35px_rgba(244,63,94,0.2)] border border-rose-400/40 flex flex-col items-center justify-center p-8 [backface-visibility:hidden] rotate-y-180 text-white">
+                    <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-indigo-950 via-rose-950 to-slate-950 backdrop-blur-2xl rounded-3xl shadow-[0_0_35px_rgba(244,63,94,0.2)] border border-rose-400/40 flex flex-col items-center justify-center p-4 sm:p-8 overflow-y-auto [backface-visibility:hidden] rotate-y-180 text-white">
                       <div className="flex items-center justify-center gap-3 mb-4 w-full px-2">
                         <h3 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-300 to-cyan-300 text-center tracking-tight break-words max-w-[80%]">{currentWord.turkish}</h3>
                         <button onClick={(e) => playAudio(e, currentWord.english)} className="p-2.5 rounded-xl bg-rose-950/60 text-rose-300 hover:bg-rose-900/80 hover:text-white border border-rose-500/30 shrink-0 transition-all shadow-[0_0_10px_rgba(244,63,94,0.2)]">
@@ -1712,7 +1761,8 @@
                               english: cleanEng.charAt(0).toUpperCase() + cleanEng.slice(1).toLowerCase(), 
                               turkish: translatedText, 
                               type: "new.", 
-                              example: `Cümleden eklendi: ${cleanEng}` 
+                              example: currentWord ? currentWord.example : '',
+                              source: currentWord ? currentWord.english : ''
                             };
 
                             const combinedNew = [...newWordsList, newCard];
@@ -1765,7 +1815,7 @@
                           const isRevealed = revealedItems[itemKey];
                           return (
                             <li key={i} className="flex justify-between items-center p-3.5 bg-slate-900/85 hover:bg-slate-800/80 rounded-xl border border-slate-800 border-l-4 border-l-purple-500 shadow-sm transition-colors">
-                              <span className="font-bold text-slate-200 text-sm">{w.english}</span>
+                              <span onClick={() => w.source && jumpToWordByEnglish(w.source)} className="font-bold text-slate-200 cursor-pointer hover:text-purple-400 text-sm">{w.english}</span>
                               <div className="flex items-center gap-2">
                                 <span className={`text-xs select-none ${isRevealed ? 'text-purple-300 font-bold bg-purple-950/60 px-2 py-1 rounded-lg border border-purple-500/20' : 'text-slate-600 bg-slate-950 blur-[5px] cursor-pointer'}`} onClick={() => toggleReveal(itemKey)}>{w.turkish}</span>
                                 <button onClick={() => toggleReveal(itemKey)} className="text-slate-500 hover:text-rose-400 p-1">{isRevealed ? <i className="fa-solid fa-eye-slash"></i> : <i className="fa-solid fa-eye"></i>}</button>
